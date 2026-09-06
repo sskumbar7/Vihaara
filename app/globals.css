@@ -1,0 +1,644 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   VIHAARA — shared design-token + component layer
+   Ported 1:1 from the STYLE block in docs/vihaara-prototype.jsx.
+   Governed by docs/DESIGN.md. Used by BOTH the landing (/) and the app
+   (/discover, /spot/[id], /saved). Do not fork this into a second system.
+   Font families come from next/font in app/layout.tsx.
+   ===================================================================== */
+
+:root{
+  --paper:#F7F5F1; --surface:#FFFFFF; --ink:#18201D; --ink-soft:#5A675F;
+  --line:#E7E3DB; --line-strong:#D9D4C9;
+  --teal:#0F5C4E; --teal-700:#0C4B40; --teal-800:#0A3F36; --teal-soft:#E4EFEA;
+  --amber:#C77D28; --amber-ink:#7A4D12; --amber-soft:#F8ECD8; --amber-soft-2:#F1DFC0;
+  --rust:#A8502E; --rust-soft:#F3E4DE;
+  --display:var(--font-display),system-ui,sans-serif;
+  --body:var(--font-body),system-ui,sans-serif;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px; --s8:32px; --s10:40px;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-full:999px; --tap:44px;
+  /* motion curves + squircle scale — consumed by the landing layer only,
+     but declared here so no rule can resolve to an invalid value */
+  --ease-out-expo:cubic-bezier(.32,.72,0,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --d-fast:.28s; --d-mid:.55s; --d-slow:.8s;
+  --r-shell:32px; --r-core:calc(32px - 6px);
+  --r-shell-sm:26px; --r-core-sm:calc(26px - 5px);
+  --bezel:6px;
+}
+
+html,body{background:var(--paper)}
+body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+.wrap{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased}
+*{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;font-family:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px;border-radius:4px}
+
+/* ---- type scale ---- */
+.t-display{font:800 34px/1.05 var(--display);letter-spacing:-.02em}
+.t-h1{font:800 26px/1.1 var(--display);letter-spacing:-.01em}
+.t-h2{font:700 20px/1.18 var(--display);letter-spacing:-.01em}
+.t-title{font:600 16px/1.25 var(--display)}
+.t-body{font:400 16px/1.5 var(--body)}
+.t-bodysm{font:400 14px/1.45 var(--body)}
+.t-button{font:600 15px/1 var(--body)}
+.t-label{font:600 13px/1.2 var(--body)}
+.t-caption{font:500 12px/1.3 var(--body)}
+.c-ink{color:var(--ink)} .c-soft{color:var(--ink-soft)} .c-teal{color:var(--teal)}
+.c-white{color:#fff} .c-amber{color:var(--amber-ink)} .c-rust{color:var(--rust)}
+
+/* ---- buttons ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);
+  min-height:var(--tap);padding:0 var(--s5);border-radius:var(--r-md);border:1px solid transparent;
+  transition:background .15s,border-color .15s,box-shadow .15s,transform .06s,color .15s}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;pointer-events:none}
+.btn--block{width:100%}
+.btn--primary{background:var(--teal);color:#fff}
+.btn--primary:hover{background:var(--teal-700)}
+.btn--primary:active{background:var(--teal-800)}
+.btn--secondary{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn--secondary:hover{background:var(--paper);border-color:var(--line-strong)}
+.btn--secondary:active{background:var(--line)}
+.btn--accent{background:var(--amber-soft);color:var(--amber-ink)}
+.btn--accent:hover{background:var(--amber-soft-2)}
+.btn--accent:active{background:#EAD3A6}
+.btn--ghost{background:transparent;color:var(--ink-soft);min-height:36px;padding:0 var(--s2)}
+.btn--ghost:hover{color:var(--ink)}
+.btn--ghost:disabled{opacity:.4}
+
+/* ---- big quick-pick tile ---- */
+.qp{display:flex;align-items:center;min-height:60px;width:100%;padding:var(--s4);
+  border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);
+  color:var(--ink);text-align:left;transition:border-color .15s,box-shadow .15s,transform .1s}
+.qp:hover{border-color:var(--teal);box-shadow:0 3px 12px rgba(15,92,78,.09);transform:translateY(-1px)}
+.qp:active{transform:translateY(0);box-shadow:none}
+
+/* ---- selectable chip ---- */
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:var(--tap);padding:0 var(--s4);
+  border-radius:var(--r-full);background:var(--surface);border:1px solid var(--line);
+  color:var(--ink);transition:.15s}
+.chip:hover{border-color:var(--teal);background:var(--teal-soft)}
+.chip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+.chip:active{transform:translateY(1px)}
+
+/* ---- venue card ---- */
+.card{display:block;width:100%;text-align:left;padding:var(--s3);border-radius:var(--r-lg);
+  background:var(--surface);border:1px solid var(--line);
+  transition:border-color .15s,box-shadow .15s,transform .1s}
+.card:hover{border-color:#CFE0D9;box-shadow:0 4px 16px rgba(24,32,29,.06);transform:translateY(-1px)}
+.card:active{transform:translateY(0);box-shadow:none}
+
+/* ---- heart ---- */
+.heart{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border-radius:var(--r-full);background:var(--paper);color:var(--ink-soft);
+  border:1px solid transparent;transition:.15s}
+.heart:hover{background:var(--teal-soft);color:var(--teal)}
+.heart--on{background:var(--teal);color:#fff}
+.heart--on:hover{background:var(--teal-700);color:#fff}
+
+/* ---- switch ---- */
+.switch{position:relative;width:44px;height:26px;border-radius:var(--r-full);
+  background:var(--line);border:none;padding:0;transition:background .18s;flex:none}
+.switch[aria-checked="true"]{background:var(--teal)}
+.switch>span{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .18s}
+.switch[aria-checked="true"]>span{transform:translateX(18px)}
+
+/* ---- pills ---- */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px var(--s2);
+  border-radius:var(--r-full);font:500 12px/1.3 var(--body);white-space:nowrap}
+.pill--neutral{background:var(--paper);color:var(--ink-soft)}
+.pill--teal{background:var(--teal-soft);color:var(--teal)}
+.pill--drive{background:var(--amber-soft);color:var(--amber-ink);font-weight:600;padding:4px 10px}
+.pill--open{background:var(--teal-soft);color:var(--teal)}
+.pill--closed{background:var(--rust-soft);color:var(--rust)}
+.pill--tag{background:#fff;color:var(--ink-soft);border:1px solid var(--line)}
+
+/* ---- tile ---- */
+.tile{display:flex;align-items:center;justify-content:center;border-radius:var(--r-md);
+  background:var(--teal-soft);color:var(--teal);flex:none}
+
+/* ---- input ---- */
+.input{min-height:var(--tap);width:100%;padding:0 var(--s4);border-radius:var(--r-md);
+  background:var(--surface);border:1px solid var(--line);color:var(--ink);
+  font:400 15px/1 var(--body);transition:border-color .15s}
+.input::placeholder{color:var(--ink-soft)}
+.input:hover{border-color:var(--line-strong)}
+.input[aria-invalid="true"]{border-color:var(--rust)}
+
+/* ---- skeleton (loading state) ---- */
+.skel{background:linear-gradient(90deg,#EEE9E0 25%,#F5F1E9 37%,#EEE9E0 63%);
+  background-size:400% 100%;animation:shimmer 1.4s ease infinite;border-radius:var(--r-sm)}
+.skel-card{height:98px;border-radius:var(--r-lg)}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ---- screen enter ---- */
+.screen{animation:fadeUp .26s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---- app shell: centered focused column (DESIGN.md §4) ---- */
+.app-shell{max-width:460px;margin:0 auto;width:100%}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- card link (stretched hit-area; keeps the heart button a real sibling) ---- */
+.card{position:relative}
+.card-link{color:inherit;text-decoration:none;display:block;min-width:0}
+.card-link::after{content:"";position:absolute;inset:0;border-radius:var(--r-lg)}
+.card-link:focus-visible{outline:none}
+.card:has(.card-link:focus-visible){outline:2px solid var(--teal);outline-offset:2px}
+
+/* =====================================================================
+   LANDING-ONLY LAYER (route "/" — docs/LANDING.md)
+   Expressive register: layered dark grounds, grain, tinted elevation,
+   larger display type. Built from the SAME brand tokens above.
+   Never used by the app screens — the app stays calm and flat.
+   ===================================================================== */
+
+.l-page{
+  --l-deep:#071D19; --l-deep-2:#0A2620; --l-deep-3:#0D302A;
+  --l-teal-line:rgba(228,239,234,.13);
+  --l-teal-line-2:rgba(228,239,234,.22);
+  --l-on-dark:#EDF4F0; --l-on-dark-soft:#A3BEB5;
+  /* a lifted tint of --amber for text on the dark ground (8:1); the brand
+     token itself is unchanged and still drives every fill */
+  --amber-lift:#E3A44F;
+  /* tinted elevation — shadows carry the brand, never neutral grey */
+  --e1:0 1px 1px rgba(7,29,25,.03), 0 6px 16px -8px rgba(7,29,25,.10);
+  --e2:0 2px 4px rgba(7,29,25,.03), 0 18px 40px -16px rgba(7,29,25,.16), 0 40px 80px -40px rgba(7,29,25,.14);
+  --e3:0 4px 8px rgba(7,29,25,.04), 0 32px 64px -24px rgba(7,29,25,.20), 0 72px 120px -60px rgba(7,29,25,.24);
+  --e-dark:0 32px 90px -32px rgba(3,14,12,.9), 0 8px 24px -12px rgba(3,14,12,.6);
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>");
+}
+
+/* section frame: full-width band, inner content max 1120px */
+.l-section{position:relative;width:100%;padding:88px 20px}
+.l-inner{position:relative;max-width:1120px;margin:0 auto}
+@media (min-width:900px){.l-section{padding:152px 40px}}
+
+/* ---- grounds ---------------------------------------------------- */
+.l-light{background:var(--paper);color:var(--ink)}
+.l-dark{position:relative;color:var(--l-on-dark);
+  background:
+    radial-gradient(120% 90% at 12% -10%, rgba(15,92,78,.55) 0%, transparent 58%),
+    radial-gradient(70% 55% at 88% 34%, rgba(199,125,40,.10) 0%, transparent 58%),
+    linear-gradient(180deg, var(--l-deep-2) 0%, var(--l-deep) 62%, #061916 100%)}
+.l-dark :focus-visible{outline-color:var(--amber-soft)}
+
+/* film grain — the single cheapest thing that kills the flat-CSS look */
+/* one fixed grain plane for the whole route — never on a scrolling container */
+.l-grain-plane{position:fixed;inset:0;pointer-events:none;z-index:var(--z-grain);
+  background-image:var(--grain);opacity:.05;mix-blend-mode:overlay}
+
+/* dot-grid depth, faded so it never becomes a pattern you "read" */
+.l-grid-bg::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(228,239,234,.20) 1px,transparent 1px);
+  background-size:24px 24px;
+  -webkit-mask-image:radial-gradient(110% 70% at 50% 0%,#000 0%,transparent 70%);
+  mask-image:radial-gradient(110% 70% at 50% 0%,#000 0%,transparent 70%)}
+
+/* a light horizon at the top edge of dark bands — reads as depth, not a border */
+.l-seam::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--l-teal-line-2) 22%,var(--l-teal-line-2) 78%,transparent)}
+
+.l-glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+
+/* ---- type ------------------------------------------------------- */
+.l-display{font:800 42px/1.0 var(--display);letter-spacing:-.035em;text-wrap:balance}
+@media (min-width:700px){.l-display{font-size:60px}}
+@media (min-width:1100px){.l-display{font-size:70px}}
+.l-h2{font:800 30px/1.06 var(--display);letter-spacing:-.025em;text-wrap:balance}
+@media (min-width:700px){.l-h2{font-size:40px}}
+.l-h3{font:700 19px/1.2 var(--display);letter-spacing:-.01em}
+
+.l-eyebrow{display:inline-flex;align-items:center;gap:var(--s2);
+  padding:9px 16px 9px 13px;border-radius:var(--r-full);
+  font:600 12px/1 var(--body);letter-spacing:.16em;text-transform:uppercase}
+.l-eyebrow::before{content:"";width:5px;height:5px;border-radius:50%;
+  background:currentColor;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 18%,transparent)}
+.l-eyebrow--amber{color:var(--amber-lift);background:rgba(199,125,40,.16);
+  box-shadow:inset 0 0 0 1px rgba(199,125,40,.42)}
+.l-eyebrow--teal{color:var(--teal);background:var(--teal-soft);
+  box-shadow:inset 0 0 0 1px rgba(15,92,78,.16)}
+
+.l-lede{font:400 17px/1.55 var(--body);max-width:54ch;text-wrap:pretty}
+@media (min-width:700px){.l-lede{font:400 19px/1.5 var(--body)}}
+.l-body{font:400 15px/1.6 var(--body);text-wrap:pretty}
+.l-soft-dark{color:var(--l-on-dark-soft)}
+
+.l-numeral{font:800 44px/1 var(--display);letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+@media (min-width:700px){.l-numeral{font-size:54px}}
+
+.l-ghost{font:800 104px/.8 var(--display);letter-spacing:-.06em;
+  font-variant-numeric:tabular-nums;color:transparent;
+  -webkit-text-stroke:1.25px var(--l-teal-line-2);user-select:none}
+@media (min-width:700px){.l-ghost{font-size:136px}}
+.l-ghost--ink{-webkit-text-stroke-color:rgba(24,32,29,.13)}
+
+/* ---- surfaces --------------------------------------------------- */
+.l-card-dark{position:relative;overflow:hidden;border-radius:20px;
+  background:linear-gradient(180deg,rgba(237,244,240,.075),rgba(237,244,240,.022));
+  border:1px solid var(--l-teal-line);
+  box-shadow:inset 0 1px 0 rgba(237,244,240,.10), var(--e-dark)}
+.l-card-light{position:relative;border-radius:20px;background:var(--surface);
+  border:1px solid var(--line);box-shadow:var(--e1)}
+
+/* ---- buttons (landing) ------------------------------------------ */
+/* ink on amber: white on #C77D28 is only 3.3:1 — ink is 5.0:1 (AA) */
+.btn--amber{background:linear-gradient(180deg,#D98F35,var(--amber));color:var(--ink);
+  box-shadow:0 1px 0 rgba(255,255,255,.28) inset, 0 8px 20px -8px rgba(199,125,40,.7)}
+.btn--amber:hover{background:linear-gradient(180deg,#E29A3D,#CD8329)}
+.btn--amber:active{background:linear-gradient(180deg,#C77D28,#B36F22);box-shadow:none}
+.btn--onDark{background:rgba(237,244,240,.05);color:var(--l-on-dark);border-color:var(--l-teal-line-2)}
+.btn--onDark:hover{background:rgba(237,244,240,.11);border-color:rgba(237,244,240,.34)}
+
+.input--onDark{background:rgba(237,244,240,.05);border-color:var(--l-teal-line-2);color:var(--l-on-dark)}
+.input--onDark::placeholder{color:var(--l-on-dark-soft)}
+.input--onDark:hover{border-color:rgba(237,244,240,.34)}
+
+/* ---- hero ------------------------------------------------------- */
+.l-hero-grid{display:grid;gap:44px;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"copy" "preview"}
+.l-hero-grid > *{min-width:0}
+@media (min-width:980px){
+  .l-hero-grid{align-items:center;
+    grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);
+    grid-template-areas:"copy preview";
+    column-gap:72px}
+}
+
+/* the preview sits on a stack of offset ghost panels — depth without a mockup */
+.l-preview-stack{position:relative;padding:14px 0}
+.l-preview-stack::before,.l-preview-stack::after{content:"";position:absolute;
+  left:6%;right:6%;border-radius:var(--r-shell);background:rgba(237,244,240,.05);
+  box-shadow:inset 0 0 0 1px var(--l-teal-line)}
+.l-preview-stack::before{top:0;height:60px}
+.l-preview-stack::after{left:11%;right:11%;top:-10px;height:60px;opacity:.5}
+
+.l-preview{box-shadow:inset 0 0 0 1px rgba(237,244,240,.16),
+  0 50px 100px -40px rgba(0,0,0,.85), 0 12px 32px -16px rgba(0,0,0,.5)}
+.l-preview-head{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:var(--s3);border-bottom:1px solid var(--line)}
+.l-preview .card{box-shadow:var(--e1)}
+
+/* coloured rank edge (image 6) */
+.l-ranked{padding-left:var(--s3)}
+.l-ranked::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;
+  border-radius:var(--r-full);background:var(--rank,var(--teal))}
+
+.l-preview-row{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;gap:var(--s2)}
+.l-rank-mark{font:800 14px/1 var(--display);font-variant-numeric:tabular-nums;
+  color:var(--line-strong);text-align:right}
+
+.l-float{animation:lFloat 9s ease-in-out infinite}
+@keyframes lFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* ---- stat bar --------------------------------------------------- */
+/* the band is its own beat, slightly deeper than the sections around it */
+.l-statband{background:linear-gradient(180deg,#061916 0%,var(--l-deep) 100%)}
+.l-stat-row{display:grid;gap:var(--s6);padding:52px 20px}
+@media (min-width:760px){.l-stat-row{grid-template-columns:repeat(3,1fr);gap:var(--s10);padding:72px 40px}}
+.l-stat{position:relative;padding-top:var(--s5)}
+.l-stat::before{content:"";position:absolute;top:0;left:0;width:32px;height:2px;
+  background:var(--amber);border-radius:var(--r-full)}
+@media (min-width:760px){
+  .l-stat+.l-stat{border-left:1px solid var(--l-teal-line);padding-left:var(--s8)}
+  .l-stat+.l-stat::before{left:var(--s8)}
+}
+/* numeral and unit share a baseline instead of the unit floating */
+.l-stat-figure{display:flex;align-items:baseline;gap:var(--s2);color:var(--l-on-dark)}
+.l-stat-unit{font:600 17px/1 var(--body);letter-spacing:-.01em;color:var(--amber-lift)}
+.l-stat-label{font:400 15px/1.4 var(--body);color:var(--l-on-dark-soft);
+  margin-top:var(--s3)}
+
+/* ---- WITHOUT / WITH signature centrepiece ----------------------- */
+.l-vs{display:grid;gap:var(--s4);margin-top:64px;align-items:stretch}
+@media (min-width:900px){
+  .l-vs{grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:0;margin-top:72px}
+}
+.l-vs-panel{position:relative;overflow:hidden;padding:var(--s8) var(--s6);height:100%}
+@media (min-width:900px){.l-vs-panel{padding:var(--s10)}}
+.l-vs-panel--without{background:var(--surface)}
+.l-vs-panel--with{color:var(--l-on-dark);
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(15,92,78,.9) 0%, transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, rgba(199,125,40,.16) 0%, transparent 55%),
+    linear-gradient(160deg,#0F5C4E 0%,#071D19 100%);
+  box-shadow:inset 0 1px 0 rgba(237,244,240,.12)}
+.l-vs-ghost{position:absolute;right:-10px;bottom:-18px;pointer-events:none}
+.l-vs-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--s4);position:relative}
+.l-vs-list li{display:flex;gap:var(--s3);align-items:flex-start}
+.l-vs-mark{flex:none;width:20px;height:20px;border-radius:var(--r-full);
+  display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+.l-vs-mark--x{background:var(--rust-soft);color:var(--rust)}
+.l-vs-mark--check{background:rgba(199,125,40,.18);color:var(--amber)}
+.l-vs-hinge{display:flex;align-items:center;justify-content:center;position:relative}
+@media (min-width:900px){
+  .l-vs-hinge::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;
+    background:linear-gradient(90deg,var(--line-strong),var(--amber),var(--line-strong))}
+}
+.l-vs-hinge-chip{position:relative;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;
+  border-radius:var(--r-full);background:var(--paper);color:var(--amber-ink);
+  font:600 12px/1 var(--body);white-space:nowrap;border:1px solid var(--amber-soft-2);
+  box-shadow:var(--e1)}
+
+/* ---- how it works ----------------------------------------------- */
+.l-steps{display:grid;gap:var(--s4);margin-top:56px}
+@media (min-width:900px){
+  .l-steps{grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:var(--s5);margin-top:72px}
+}
+.l-steps-stack{display:grid;gap:var(--s4);align-content:stretch}
+.l-steps > .l-bezel,.l-steps-stack > .l-bezel{display:flex;flex-direction:column}
+.l-steps > .l-bezel > .l-core,.l-steps-stack > .l-bezel > .l-core{flex:1}
+@media (min-width:900px){.l-steps-stack{gap:var(--s5)}}
+.l-step{padding:var(--s6);display:flex;flex-direction:column;height:100%}
+@media (min-width:900px){.l-step{padding:var(--s8)}}
+.l-step--lead{min-height:360px}
+.l-step .l-ghost{position:absolute;right:var(--s5);top:var(--s4);pointer-events:none}
+/* the lead step's numeral occupies the card's breathing room, so the space
+   reads as composition rather than a gap */
+@media (min-width:900px){
+  .l-step--lead .l-ghost{top:auto;bottom:32%;right:var(--s6);font-size:190px;
+    -webkit-text-stroke-width:1.5px}
+}
+.l-step-n-sm{font-size:72px!important}
+@media (min-width:700px){.l-step-n-sm{font-size:88px!important}}
+.l-step-icon{width:40px;height:40px;border-radius:13px;display:inline-flex;align-items:center;
+  justify-content:center;color:var(--amber);background:rgba(199,125,40,.11);
+  box-shadow:inset 0 0 0 1px rgba(199,125,40,.24), inset 0 1px 0 rgba(255,255,255,.10)}
+
+/* miniature product vignettes inside the step cards */
+.l-mini{margin-top:auto;padding-top:var(--s6)}
+.l-mini-chips{display:flex;flex-wrap:wrap;gap:6px}
+.l-mini-chip{padding:7px 12px;border-radius:var(--r-full);font:600 12px/1 var(--body);
+  background:rgba(237,244,240,.06);border:1px solid var(--l-teal-line);color:var(--l-on-dark-soft)}
+.l-mini-chip--on{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.l-mini-rows{display:flex;flex-direction:column;gap:6px}
+.l-mini-row{display:flex;align-items:center;gap:var(--s2);padding:8px 10px;border-radius:10px;
+  background:rgba(237,244,240,.05);border:1px solid var(--l-teal-line)}
+.l-mini-bar{height:6px;border-radius:var(--r-full);background:rgba(237,244,240,.22)}
+.l-mini-pill{font:600 10px/1 var(--body);padding:4px 7px;border-radius:var(--r-full);
+  background:var(--amber-soft);color:var(--amber-ink);white-space:nowrap}
+.l-mini-route{display:flex;align-items:center;gap:var(--s2);color:var(--l-on-dark-soft);
+  font:500 12px/1 var(--body)}
+.l-mini-route-line{flex:1;height:1px;background:
+  repeating-linear-gradient(90deg,var(--l-teal-line-2) 0 6px,transparent 6px 12px)}
+
+/* ---- why -------------------------------------------------------- */
+.l-why-shell{margin-top:64px;background:rgba(199,125,40,.07);
+  box-shadow:inset 0 0 0 1px rgba(199,125,40,.18), var(--e2)}
+@media (min-width:900px){.l-why-shell{margin-top:80px}}
+.l-why-lead{display:grid;gap:var(--s6);padding:var(--s8) var(--s6);align-items:center;
+  background:linear-gradient(150deg,#FCF5E9 0%,var(--amber-soft) 100%)}
+@media (min-width:900px){
+  .l-why-lead{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);padding:var(--s10)}
+}
+.l-why-demo{padding:var(--s5);border-radius:var(--r-core-sm);background:var(--surface);
+  box-shadow:inset 0 0 0 1px rgba(199,125,40,.16), var(--e2)}
+.l-why-pair{display:grid;gap:var(--s4);margin-top:var(--s4)}
+.l-why-pair > .l-bezel{display:flex}
+.l-why-pair > .l-bezel > .l-core{flex:1}
+@media (min-width:760px){.l-why-pair{grid-template-columns:1fr 1fr;gap:var(--s5);margin-top:var(--s5)}}
+.l-why-card{padding:var(--s6);height:100%}
+@media (min-width:900px){.l-why-card{padding:var(--s8)}}
+.l-why-icon{width:40px;height:40px;border-radius:13px;display:inline-flex;align-items:center;
+  justify-content:center;color:var(--teal);background:var(--teal-soft);
+  box-shadow:inset 0 0 0 1px rgba(15,92,78,.14), inset 0 1px 0 rgba(255,255,255,.7)}
+
+/* ---- taste ------------------------------------------------------ */
+.l-taste{display:grid;gap:56px;align-items:start}
+@media (min-width:980px){.l-taste{grid-template-columns:minmax(0,1fr) minmax(0,472px);gap:80px}}
+.l-taste-col{width:100%;padding:var(--s4)}
+.l-taste-col .card{box-shadow:var(--e1)}
+
+/* legend: names the two signature elements the card is built around */
+.l-legend{margin-top:var(--s8);display:flex;flex-direction:column;gap:var(--s4);
+  padding-top:var(--s6);border-top:1px solid var(--line)}
+.l-legend-row{display:grid;gap:var(--s2);align-items:start}
+@media (min-width:520px){
+  .l-legend-row{grid-template-columns:150px minmax(0,1fr);gap:var(--s4)}
+}
+.l-legend-row > :first-child{justify-self:start;margin-top:2px}
+
+/* ---- cta band --------------------------------------------------- */
+.l-cta{position:relative;overflow:hidden;color:#fff;
+  background:
+    radial-gradient(90% 120% at 50% -20%, rgba(199,125,40,.28) 0%, transparent 60%),
+    linear-gradient(180deg,#12695A 0%,#0F5C4E 45%,#0A3F36 100%)}
+.l-cta-mark{position:absolute;left:50%;bottom:-64px;transform:translateX(-50%);
+  font:800 200px/1 var(--display);letter-spacing:-.06em;color:rgba(255,255,255,.035);
+  pointer-events:none;user-select:none;white-space:nowrap}
+@media (min-width:900px){.l-cta-mark{font-size:300px;bottom:-96px}}
+
+/* ---- footer ----------------------------------------------------- */
+.l-footer-link{display:inline-flex;align-items:center;min-height:var(--tap);color:inherit}
+
+/* step-01 vignette: a small panel, so the lead card fills honestly */
+.l-mini-panel{padding:var(--s4);border-radius:var(--r-lg);
+  background:rgba(7,29,25,.35);border:1px solid var(--l-teal-line)}
+.l-mini-label{font:600 10px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--l-on-dark-soft)}
+.l-mini-divider{height:1px;background:var(--l-teal-line);margin:var(--s4) 0 var(--s3)}
+.l-mini-alt{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);
+  font:500 12px/1 var(--body);color:var(--l-on-dark-soft)}
+
+/* =====================================================================
+   HAPTIC LAYER — applied from the high-end-visual-design skill.
+   Structure + motion only; brand tokens stay locked to LANDING.md §0
+   (teal / amber / paper, Bricolage + Inter, the vihaara wordmark).
+   ===================================================================== */
+
+.l-page{--z-nav:30; --z-grain:40; --nav-h:66px}
+@media (min-width:900px){.l-page{--nav-h:76px}}
+
+/* ---- Double-bezel: nothing sits flat on the ground ---------------- */
+.l-bezel{position:relative;border-radius:var(--r-shell);padding:var(--bezel);
+  background:rgba(24,32,29,.035);
+  box-shadow:inset 0 0 0 1px rgba(24,32,29,.06), var(--e2)}
+.l-bezel--dark{background:rgba(237,244,240,.045);
+  box-shadow:inset 0 0 0 1px rgba(237,244,240,.09), var(--e-dark)}
+.l-bezel--sm{border-radius:var(--r-shell-sm)}
+.l-core{position:relative;border-radius:var(--r-core);overflow:hidden;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.16)}
+.l-bezel--sm > .l-core{border-radius:var(--r-core-sm)}
+.l-core--paper{background:var(--paper)}
+.l-core--surface{background:var(--surface)}
+.l-core--dark{background:linear-gradient(180deg,rgba(237,244,240,.06),rgba(237,244,240,.018));
+  box-shadow:inset 0 1px 0 rgba(237,244,240,.13)}
+
+/* ---- Island nav: floating pill, detached, glass ------------------- */
+/* fixed-height bar; the hero reserves --nav-h so nothing sits under it */
+.l-nav-sentinel{position:absolute;top:0;left:0;width:1px;height:1px}
+.l-nav{position:fixed;top:0;left:0;right:0;z-index:var(--z-nav);
+  height:var(--nav-h);display:flex;align-items:center;
+  background:transparent;
+  transition:background var(--d-mid) var(--ease-out-expo),
+             box-shadow var(--d-mid) var(--ease-out-expo)}
+.l-nav::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--l-teal-line-2);opacity:0;
+  transition:opacity var(--d-mid) var(--ease-out-expo)}
+.l-nav.is-stuck{background:var(--l-deep);
+  box-shadow:0 10px 30px -18px rgba(3,14,12,.95)}
+.l-nav.is-stuck::after{opacity:1}
+.l-nav-bar{width:min(1120px,100%);margin:0 auto;padding:0 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--s4)}
+@media (min-width:900px){.l-nav-bar{padding:0 40px}}
+.l-nav-brand{display:inline-flex;align-items:center;min-height:var(--tap);
+  text-decoration:none}
+
+/* header/secondary action: teal, so it never competes with the amber primary */
+.btn--nav{min-height:var(--tap);padding:0 var(--s5);background:var(--teal);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(237,244,240,.20)}
+.btn--nav:hover{background:var(--teal-700);box-shadow:inset 0 0 0 1px rgba(237,244,240,.34)}
+.btn--nav:active{background:var(--teal-800)}
+
+/* ---- Button-in-button: the trailing icon gets its own island ------ */
+.l-page .btn{border-radius:var(--r-full);
+  transition:background var(--d-fast) var(--ease-out-expo),
+             border-color var(--d-fast) var(--ease-out-expo),
+             box-shadow var(--d-fast) var(--ease-out-expo),
+             transform var(--d-fast) var(--ease-out-expo),
+             color var(--d-fast) var(--ease-out-expo)}
+.l-page .btn:active{transform:scale(.98) translateY(0)}
+.btn--pill{padding-left:var(--s6);padding-right:6px;gap:var(--s4)}
+/* stays on the 44px floor (DESIGN.md §8) while reading compact */
+.btn--pill.btn--sm{min-height:var(--tap);padding-left:var(--s5);padding-right:6px;gap:var(--s3)}
+.l-btn-orb{width:32px;height:32px;border-radius:var(--r-full);flex:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(24,32,29,.10);
+  transition:transform var(--d-fast) var(--ease-spring),
+             background var(--d-fast) var(--ease-out-expo)}
+.btn--sm .l-btn-orb{width:30px;height:30px}
+.btn:hover .l-btn-orb{transform:translate(3px,-1px) scale(1.06);background:rgba(24,32,29,.16)}
+.btn--onDark .l-btn-orb,.btn--primary .l-btn-orb{background:rgba(237,244,240,.14)}
+.btn--onDark:hover .l-btn-orb,.btn--primary:hover .l-btn-orb{background:rgba(237,244,240,.22)}
+
+/* ---- Scroll interpolation: heavy, blurred fade-up ----------------- */
+.l-reveal{opacity:0;transform:translateY(28px);filter:blur(6px);
+  transition:opacity var(--d-slow) var(--ease-out-expo),
+             transform var(--d-slow) var(--ease-out-expo),
+             filter var(--d-slow) var(--ease-out-expo);
+  transition-delay:var(--reveal-delay,0ms);will-change:transform,opacity}
+.l-reveal.is-in{opacity:1;transform:none;filter:blur(0)}
+@media (prefers-reduced-motion:reduce){
+  .l-reveal{opacity:1;transform:none;filter:none}
+}
+
+/* card + chip motion picks up the spring curve on the landing only */
+.l-page .card{transition:border-color var(--d-fast) var(--ease-out-expo),
+  box-shadow var(--d-fast) var(--ease-out-expo),transform var(--d-fast) var(--ease-out-expo)}
+.l-page .card:hover{transform:translateY(-2px)}
+.l-page .chip{transition:background var(--d-fast) var(--ease-out-expo),
+  border-color var(--d-fast) var(--ease-out-expo),color var(--d-fast) var(--ease-out-expo),
+  transform var(--d-fast) var(--ease-spring)}
+.l-page .chip:hover{transform:translateY(-1px)}
+
+/* taste column now lives in a bezel */
+.l-taste-shell{width:100%;max-width:472px}
+
+/* dominant primary CTA — the one action that outranks everything on a section */
+.btn--lg{min-height:56px;font-size:16px;padding-left:var(--s6);padding-right:8px;gap:var(--s5)}
+.btn--lg .l-btn-orb{width:38px;height:38px}
+
+
+/* pre-footer secondary row: separated from the primary CTA, deliberately quieter */
+.l-cta-mail{margin:var(--s10) auto 0;max-width:440px;padding-top:var(--s6);
+  border-top:1px solid rgba(255,255,255,.16)}
+.l-cta-mail-label{font:500 13px/1.3 var(--body);color:rgba(255,255,255,.72);
+  margin-bottom:var(--s3)}
+
+/* the copy column pins while the shortlist scrolls past it (no dead gap) */
+@media (min-width:980px){
+  .l-taste{align-items:start}
+  .l-taste-copy{position:sticky;top:calc(var(--nav-h) + var(--s6));align-self:start}
+}
+
+/* hero category rail — reads the product at a glance, without prose */
+/* an aligned grid, so it never wraps to a lone widow item */
+.l-cats{list-style:none;margin:28px 0 0;padding:0;max-width:460px;width:100%;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+  gap:var(--s4) var(--s3)}
+.l-cat{display:flex;align-items:center;gap:var(--s2);min-width:0}
+.l-cat-label{font:600 12px/1 var(--body);color:var(--l-on-dark);white-space:nowrap}
+@media (max-width:520px){
+  .l-cats{gap:var(--s3) var(--s4)}
+  .l-cat-label{font-size:11px}
+}
+
+/* taste: bind the control to its result so the chip and the list read as
+   cause and effect rather than two adjacent, unrelated things */
+.l-picker{margin-top:var(--s6);padding:var(--s5);border-radius:var(--r-shell-sm);
+  background:rgba(15,92,78,.05);box-shadow:inset 0 0 0 1px rgba(15,92,78,.12)}
+.l-picker-label{font:600 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--teal)}
+.l-picker-result{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2);
+  margin-top:var(--s4);padding-top:var(--s4);border-top:1px dashed rgba(15,92,78,.22);
+  font:500 13px/1.3 var(--body);color:var(--ink)}
+.l-picker-count{margin-top:var(--s2);padding-left:26px;
+  font:400 13px/1.3 var(--body);color:var(--ink-soft)}
+.l-picker-arrow{width:14px;height:14px;flex:none;border-left:1px solid rgba(15,92,78,.4);
+  border-bottom:1px solid rgba(15,92,78,.4);border-bottom-left-radius:5px;
+  margin:-8px var(--s1) 0 var(--s2)}
+/* the echo repeats the selected chip's own styling, verbatim */
+.l-picker-echo{display:inline-flex;align-items:center;padding:5px 12px;
+  border-radius:var(--r-full);background:var(--teal);color:#fff;
+  font:600 12px/1 var(--body)}
+.l-picker-echo--head{font-size:12px}
+/* the list re-mounts on selection, so the change is felt as a consequence */
+
+
+/* a comparison glyph shouldn't carry a numeral's weight */
+.l-stat-prefix{font:600 22px/1 var(--display);color:var(--l-on-dark-soft);
+  align-self:center;margin-right:-2px}
+@media (min-width:700px){.l-stat-prefix{font-size:27px}}
+
+/* =====================================================================
+   HERO CHOREOGRAPHY — the page's one orchestrated moment
+   (DESIGN.md §3.6/§11, LANDING.md §2.4). Everything animates on
+   transform/opacity only; prefers-reduced-motion resolves it instantly.
+   ===================================================================== */
+
+.l-seq{animation:lSeq .75s var(--ease-out-expo) both;
+  animation-delay:calc(var(--i,0) * 80ms)}
+@keyframes lSeq{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* the category rail assembles left to right, after its own slot lands */
+.l-cats .l-cat{animation:lSeq .6s var(--ease-out-expo) both}
+.l-cats .l-cat:nth-child(1){animation-delay:300ms}
+.l-cats .l-cat:nth-child(2){animation-delay:345ms}
+.l-cats .l-cat:nth-child(3){animation-delay:390ms}
+.l-cats .l-cat:nth-child(4){animation-delay:435ms}
+.l-cats .l-cat:nth-child(5){animation-delay:480ms}
+
+/* the shortlist deals itself out in rank order — the product assembling */
+.l-preview-row{animation:lDeal .62s var(--ease-out-expo) both}
+.l-preview-row:nth-child(1){animation-delay:560ms}
+.l-preview-row:nth-child(2){animation-delay:670ms}
+.l-preview-row:nth-child(3){animation-delay:780ms}
+@keyframes lDeal{
+  from{opacity:0;transform:translateY(16px) scale(.986)}
+  to{opacity:1;transform:none}
+}
+
+/* the float only begins once the entry has landed, so nothing competes */
+.l-float{animation:lFloat 9s ease-in-out infinite;animation-delay:1.5s}
+
+/* the taste shortlist re-deals on every selection, so the chip's effect is felt */
+.l-taste-swap > *{animation:lDeal .5s var(--ease-out-expo) both}
+.l-taste-swap > :nth-child(1){animation-delay:0ms}
+.l-taste-swap > :nth-child(2){animation-delay:70ms}
+.l-taste-swap > :nth-child(3){animation-delay:140ms}
+.l-taste-swap > :nth-child(4){animation-delay:210ms}
+
+/* reduced motion: every entry resolves to its end state, instantly */
+@media (prefers-reduced-motion:reduce){
+  .l-seq,.l-cats .l-cat,.l-preview-row,.l-taste-swap > *{
+    opacity:1!important;transform:none!important;filter:none!important}
+}
