@@ -36,6 +36,7 @@ jobs:
       - name: Build static export
         # project sites are served from /<repo>/, so the app needs that prefix
         env:
+          STATIC_EXPORT: "1"
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
         run: npm run build
 
