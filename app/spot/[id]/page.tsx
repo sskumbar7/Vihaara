@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { Stub } from "@/components/Stub";
-import { getActivity } from "@/lib/activities";
+import { ACTIVITIES, getActivity } from "@/lib/activities";
 
 type Params = Promise<{ id: string }>;
+
+/** Every seed venue gets a real, shareable, statically-built URL (DESIGN.md §5). */
+export function generateStaticParams() {
+  return ACTIVITIES.map((a) => ({ id: a.id }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { id } = await params;
